@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>心电监测</title>
+</head>
+<body>
+<h3 align="center">LCD.Polar.ECG采集 </h3>
+<p align="left">此应用程序显示来自Polar H10传感器的实时ECG数据。目前它只适用于H10，并且H10必须安装3.0.35或更高版本的固件。</p>
+<h3 align="left">QRS峰值检测 </h3>
+<p align="left">该应用程序内置与传感器不同的QRS波检测算法，并对来自传感器的数据和经内部算法计算后的HR和RR值进行同时绘制。开发内部算法是因为在某些情况下H10报告的心率与心电图中的峰值数量不一致。</p>
+<h3>LCD.Polar.ECG采集截图 </h3>
+<p align="center"><img src="ecg.jpg" alt="截屏" width="50%" /></p>
+<h3 align="left">HR/RR 图 </h3>
+<p align="left">这是来自传感器和算法的HR和RR的图。心率HR在bpm中，RR间期以0.1毫秒为单位(以保持值与HR值在同一范围内)。浅粉色的值是内部计算。暗红色的值来自传感器。注意，HR是一个计算值，它是在RR间期的平均心率，并不是直接测量的。RR间期是实际测量值。H10使用什么算法并不是公开信息，但内部算法以每分钟60次(以秒为单位的最后25个RR间隔的运行平均值)。</p>
+<h3 align="left">QRS峰检测图</h3>
+<p align="left">还有一个可选的图的中间步骤在算法。这对于研究算法正在做什么很有用，而不是查看实际的心电图数据。这幅图显示了它检测到的峰值和数字滤波加上其评分算法的最终结果。由于数字滤波器的特性，这些后来被延迟从输入心电信号。这个视图可以在 设置-是否显示QRS图 中关闭。</p>
+<h3 align="left">关于心电图</h3>
+<p align="left"> 网格中有大大小小的格子，一个大盒子在水平(时间)轴上是0.2秒（5个大格是1秒），在垂直轴上是0.5 mV（2个大格是1mV）。一个页面横坐标共有20个大格显示4秒的心电数据。</p>
+<h3 align="left">关于LCD.Polar.ECG采集应用程序</h3>
+<p align="left">由于Android12权限设置，除了蓝牙权限外需要授权软件“位置信息”权限！同时为了将CSV数据存到本地文件夹下还需要授权文件读写权限！</p>
+<h3 align="left">CSV数据导出格式</h3>
+<p align="left"><strong>ECG心电数据</strong></p>
+<p align="left">文件以PolarECG-yyyy-MM-dd-HH-mm-ss.csv格式命名。超过30分钟以上的心电数据在确认保存时会出现些许卡顿，无需反复保存等待保存成功的提示弹出后即可。 数据由表头和电压信息组成，内容如下：
+</p>
+<table style="border:0px solid black;margin-left:5%;margin-right:auto;">
+  <tr>
+    <th>标签</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td>采集平台</td>
+    <td>采集软件的名称及版本</td>
+  </tr>
+  <tr>
+    <td>停止采集时间</td>
+    <td>停止采集数据的日期/时间</td>
+  </tr>
+  <tr>
+    <td>持续采集时间</td>
+    <td>数据持续采集的时间</td>
+  </tr>
+  <tr>
+    <td>数据长度</td>
+    <td>心电数据的长度</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>采样频率</td>
+    <td>一般为默认的130Hz</td>
+  </tr>
+  <tr>
+    <td>停止采集时的心率</td>
+    <td>设备停止采集时的心率数据，传感器通过蓝牙传的</td>
+  </tr>
+  <tr>
+    <td>停止记录时的心率</td>
+    <td>记录停止时计算的心率数据，内部算法计算的</td>
+  </tr>
+  <tr>
+    <td>设备名称</td>
+    <td>心率设备的名称</td>
+  </tr>
+  <tr>
+    <td>设备ID</td>
+    <td>采集设备的ID</td>
+  </tr>
+  <tr>
+    <td>电池电量</td>
+    <td>采集设备的电池电量</td>
+  </tr>
+  <tr>
+    <td>固件版本</td>
+    <td>采集设备的固件版本</td>
+  </tr>
+  <tr>
+    <td>受试者名称及编号</td>
+    <td>受试者的名称及编号，也可以添加备注信息</td>
+  </tr>
+</table>
+<p align="left">心电图电压以毫伏为单位，数值保留到小数点后3位</p>
+<p align="left"><strong>原始心率数据 </strong></p>
+<p align="left">文件以PolarECG-DeviceHR-yyyy-MM-dd-HH-mm-ss.csv格式命名，对应的值为停止时间。这些值是一个时间戳、HR值和一个由空格分隔的RR值列表。RR值为整数，单位为1/1024秒，即设备的原始数据。 </p>
+<p align="left"><strong>计算的心率数据 </strong></p>
+<p align="left">文件以PolarECG-DeviceHR-yyyy-MM-dd-HH-mm-ss.csv格式命名，对应的值为停止时间。这些值是一个时间戳、HR值和一个由空格分隔的RR值列表。RR值为整数，单位为1/1024秒，即设备的原始数据。 </p>
+<h3 align="left"><a name="menu" id="menu"></a>开始/停止采集</h3>
+<p align="left">必须在停止采集后才能保存当前数据，下一次采集开始后会释放之前采集的结果。</p>
+<p align="left"><strong>数据保存</strong></p>
+<p align="left">数据保存菜单有多种保存类型，可以按需进行数据存储。</p>
+<div style="margin-left:2%;">
+	<p align="left"><strong>保存所有数据</strong></p>
+	<p align="left"><strong>保存心电数据&心电图</strong></p>
+	<p align="left"><strong>保存30s心电图</strong></p>
+	<p align="left"><strong>保存心电数据</strong></p>
+	<p align="left"><strong>保存原始心率数据</strong></p>
+	<p align="left"><strong>保存计算后的心率数据</strong></p>
+</div>
+<p align="left"><strong>设置设备ID </strong></p>
+<p align="left">设置您的PolarH10的ID，同时软件也会记录您之前使用过的设备ID</p>
+<p align="left"><strong>设置存储目录</strong></p>
+<p align="left">设置CSV和PNG文件保存的目录，需要选择或新建有读写权限的文件夹。新建的文件夹在软件删除后也会保存。</p>
+<p align="left"><strong>设备信息</strong></p>
+<p align="left">显示传感器的信息和当前状态。</p>
+<p align="left"><strong>重置绘制接口</strong></p>
+<p align="left">画图出现渲染问题或者长时间不绘制则可以尝试使用该功能</p>
+<p align="left"><strong>重启采集接口</strong></p>
+<p align="left">相当于重启程序。</p>
+<p><a name="settings" id="settings"></a><strong>设置</strong>
+</p>
+<p align="left">您可以在此设置设备ID、受试者的名称和是否打开QRS峰值检测图。</p>
+<p>&nbsp;</p>
+</body>
+</html>

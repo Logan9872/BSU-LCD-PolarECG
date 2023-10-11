@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.kenevans.polar.polarecg">
+
+    <!-- For below Android 12 -->
+    <!-- 1.定位权限请求 -->
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:maxSdkVersion="30"
+        android:targetSdkVersion="31" />
+    <!-- 2.文件访问权限请求 -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30"
+        android:targetSdkVersion="31" />
+    <!-- 3.蓝牙权限请求 -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30"/>
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30"
+        android:targetSdkVersion="31" />
+
+    <!-- For Android 12 and above -->
+    <!-- 安卓12以前的设备还需要位置权限，12以后的设备不需要-->
+    <!-- 1.蓝牙连接权限请求 -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_CONNECT"
+        android:minSdkVersion="31"
+        android:targetSdkVersion="31" />
+    <!-- 2.蓝牙查找权限请求 -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:minSdkVersion="31"
+        android:usesPermissionFlags="neverForLocation" />
+
+    <!--
+     1.allowBackup是否允许备份
+     2.icon图标
+     3.label软件名称
+     4.roundIcon圆角图标
+     5.supportsRtl是否支持从右往左写的语言（阿拉伯语）
+     6.theme风格-->
+    <application
+        android:allowBackup="true"
+        android:fullBackupOnly="true"
+        android:icon="@mipmap/ic_polar_ecg"
+        android:label="LCD.ECG"
+        android:roundIcon="@mipmap/ic_polar_ecg_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+<!--        主页面是什么——ECGActivity -->
+        <activity
+            android:name="net.kenevans.polar.polarecg.ECGActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!--suppress CheckTagEmptyBody -->
+        <activity
+            android:name=".InfoActivity"
+            android:label="@string/help_title"></activity>
+        <!--suppress CheckTagEmptyBody -->
+        <activity
+            android:name="net.kenevans.polar.polarecg.SettingsActivity"
+            android:exported="true"
+            android:label="@string/settings_title"
+            android:theme="@style/SettingsTheme"></activity>
+    </application>
+
+</manifest>

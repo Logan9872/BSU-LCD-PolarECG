@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">LCD.Polar.ECG采集</string>
+    <string name="settings_name">设置</string>
+    <string name="plot_title">25 mm/s, 10 mm/mV</string>
+    <string name="plot_range_title">mV</string>
+    <string name="plot_domain_title">毫秒</string>
+    <string name="note_dialog_title">受试者名称及编号</string>
+    <string name="device_id_dialog_title">输入心率带设备ID</string>
+    <string name="disconnect">设备断开</string>
+    <string name="connect">连接 ECG</string>
+    <string name="connect2">连接HR/RR</string>
+    <string name="connecting">正在连接设备</string>
+    <string name="noDevice">无可用设备</string>
+    <string name="device_id">设备ID</string>
+    <string name="set_id_button">更换设备ID</string>
+    <string name="elapsed_time">%1$.1f 秒"</string>
+    <string name="pause_item">暂停采集</string>
+    <string name="play_item">开始采集</string>
+    <string name="stop_item">停止采集</string>
+    <string name="save_item">保存</string>
+    <string name="save_data_item">保存心电数据 </string>
+    <string name="save_plot_item">保存30s心电图</string>
+    <string name="save_both_item">保存心电数据&amp;心电图</string>
+    <string name="save_all_item">保存所有数据</string>
+    <string name="save_device_data_item">保存原始心率数据</string>
+    <string name="save_qrs_data_item">保存计算后的心率数据</string>
+    <string name="choose_data_directory_item">设置存储目录</string>
+    <string name="info_item">设备信息</string>
+    <string name="redo_setup_plots_item">重置绘制接口</string>
+    <string name="restart_api_item">重启采集接口</string>
+    <string name="device_id_item">设置设备 ID</string>
+    <string name="settings_item">设置</string>
+    <string name="info_string">%1$s\n电池电量: %2$s\n固件版本: %3$s\nID: %4$s\n</string>
+    <string name="connected_string">%1$s已连接</string>
+    <string name="ble_not_supported">设备不支持蓝牙功能</string>
+    <string name="permission_not_granted">尚未授予此应用程序正常工作所需的所有权限，您可以在“设置”中更改权限</string>
+
+    <!-- Plots -->
+    <string name="label_hr">心率HR: </string>
+    <string name="label_rr">R-R间期: </string>
+    <string name="hr_title">HR 与 RR - 时间</string>
+    <string name="qrs_title">ECG - 时间</string>
+    <string name="hr_range_title">HR, bpm RR, 10毫秒</string>
+    <string name="qrs_range_title">QRS 峰值检测</string>
+    <string name="hr_domain_title_time">时间</string>
+    <string name="hr_domain_title_sample">采样频率</string>
+
+    <!-- Settings -->
+    <string name="settings_title">设置</string>
+    <string name="device_id_title">设备ID</string>
+    <string name="device_id_summary">Polar设备ID 或 MAC地址</string>
+    <string name="patient_name_title">记录人员</string>
+    <string name="patient_name_summary">记录人员名称</string>
+    <string name="qrs_visibility_title">是否显示QRS图</string>
+    <string name="qrs_visibility_summary_on">显示QRS图</string>
+    <string name="qrs_visibility_summary_off">不显示QRS图</string>
+
+    <!-- Info/Help -->
+    <string name="help_url_not_found">找不到 帮助 链接 </string>
+    <string name="help_item">帮助</string>
+    <string name="help_title">帮助</string>
+    <string name="help_show_error">显示错误帮助</string>
+
+    <!-- Utils -->
+    <string name="ok">确认</string>
+    <string name="cancel">取消</string>
+    <string name="error">错误</string>
+    <string name="exception">异常</string>
+    <string name="info">信息</string>
+    <string name="warning">警告</string>
+</resources>
