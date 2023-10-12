@@ -25,4 +25,4 @@
 # Acknowledgement
  We are very grateful for the software KE.Net-ECG developed by @KennethEvans (https://github.com/KennethEvans).
  We are deeply deeply saddened by the passing of @KennethEvans. 
- Life is the natural phenomenon, to! Take care.
+ Life is the natural phenomenon, to! Take care
