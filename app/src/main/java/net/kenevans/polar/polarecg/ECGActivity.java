@@ -52,6 +52,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -82,9 +83,12 @@ public class ECGActivity extends AppCompatActivity
     private SharedPreferences mSharedPreferences;
     private static final int MAX_DEVICES = 3;
     // Currently the sampling rate is fixed at 130
+
     private QRSDetection mQRS;
     //新建一个所有ecg数据的list
     private List<Double> allEcgValues;
+    private List<Long> allEcgValuesTime;
+
     List<DeviceInfo> mMruDevices;
     private XYPlot mECGPlot;
     private XYPlot mHRPlot;
@@ -1020,31 +1024,40 @@ public class ECGActivity extends AppCompatActivity
                 PlotArrays arrays = getPlotArrays();
                 //将ecg数据直接赋值
                 final List<Double> ecgvals = allEcgValues;
+                final List<Long> ecgvalsTime = allEcgValuesTime;
 //                final boolean[] peakvals = arrays.peaks;
                 int nPeaks = mQRSPlotter.mSeries4.size();
                 int nSamples = ecgvals.size();
-                String duration = String.format(Locale.US, "%.1f 秒",
+                String duration = String.format(Locale.US, "%.3f 秒",
                         nSamples / FS);
                 out.write("采集平台=" + "LCD.Polar.ECG采集: "
-                        + Utils.getVersion(this) + "\n");
-                out.write("停止采集时间=" + mStopTime.toString() + "\n");
-                out.write("持续采集时间=" + duration + "\n");
-                out.write("心电数据长度=" + nSamples + "\n");
-                out.write("心电采样频率=" + FS + "\n");
-                out.write("设备记录时的心率=" + mDeviceStopHR + "\n");
-                out.write("记录停止时的心率=" + mCalcStopHR + "\n");
-//                out.write("npeaks=" + nPeaks + "\n");
-                out.write("设备名称=" + mName + "\n");
-                out.write("设备ID=" + mDeviceId + "\n");
-                out.write("电池电量=" + mBatteryLevel + "\n");
-                out.write("固件版本=" + mFirmware + "\n");
-                out.write("受试者名称及编号=" + note + "\n");
+                        + Utils.getVersion(this) + ", 0\n");
+                out.write("停止采集时间=" + mStopTime.toString() + ", 0\n");
+                out.write("持续采集时间=" + duration + ",0\n");
+                out.write("心电数据长度=" + nSamples + ",0\n");
+                out.write("心电采样频率=" + FS + ",0\n");
+                out.write("设备记录时的心率=" + mDeviceStopHR + ",0\n");
+                out.write("记录停止时的心率=" + mCalcStopHR + ",0\n");
+//                out.write("npeaks=" + nPeaks + ",0\n");
+                out.write("设备名称=" + mName + ", 0\n");
+                out.write("设备ID=" + mDeviceId + ", 0\n");
+                out.write("电池电量=" + mBatteryLevel + ", 0\n");
+//                out.write("固件版本=" + mFirmware + "\n");
+                out.write("受试者名称及编号=" + note + ",0\n");
+                out.write("Time" + ",ECG\n");
 
                 // Write samples
+
+//                Log.e(TAG,ecgvals.toString());
+//                Log.e(TAG,ecgvalsTime.toString());
+
                 for (int i = 0; i < nSamples; i++) {
                     //在这里拿到所有的ecg数据
-                    out.write(String.format(Locale.US, "%.3f\n", ecgvals.get(i)));
+//                    out.write(String.format(Locale.US, "%.3f\n", ecgvals.get(i)));
+                    out.write(String.format(Locale.US, "%d, %.3f\n", ecgvalsTime.get(i), ecgvals.get(i)));
                 }
+//                清空时间戳的list
+                allEcgValuesTime = null;
                 out.flush();
                 out.close();
                 writer.close();
@@ -1264,15 +1277,29 @@ public class ECGActivity extends AppCompatActivity
                                         sensorSetting.maxSettings());
                             }).observeOn(AndroidSchedulers.mainThread())
                             .subscribe(polarEcgData -> {
+//                                        Log.e(TAG,Long.toString(polarEcgData.timeStamp));
+//                                        Log.e(TAG,polarEcgData.samples.toString());
+
 //                                        logTimestampInfo(polarEcgData);
                                         if (mQRS == null) {
                                             mQRS = new QRSDetection(ECGActivity.this);
                                         }
-//                                        logEcgDataInfo(polarEcgData);
+                                        //判断是否为空
+                                        if (allEcgValuesTime == null) {
+                                            allEcgValuesTime = new ArrayList<>();
+                                        }
+                                        //
+                                        long[] timestamps = logEcgDataInfo1(polarEcgData,130);
                                         mQRS.process(polarEcgData);
                                         // Update the elapsed time
-                                        double elapsed =
-                                                mECGPlotter.getDataIndex() / 130.;
+                                        double elapsed = mECGPlotter.getDataIndex() / 130.;
+
+//                                        插入时间戳
+                                        for (long timestamp : timestamps) {
+                                            allEcgValuesTime.add(timestamp);
+                                        }
+
+
                                         mTextViewTime.setText(getString(R.string.elapsed_time, elapsed));
                                     },
                                     throwable -> {
@@ -1370,21 +1397,49 @@ public class ECGActivity extends AppCompatActivity
                 .get(PolarSensorSetting.SettingType.RANGE));
     }
 
-    @SuppressWarnings("unused")
-    public static void logEcgDataInfo(PolarEcgData polarEcgData) {
+// 不插值时间戳
+    public static long[]  logEcgDataInfo(PolarEcgData polarEcgData) {
         SimpleDateFormat sdf1 =
                 new SimpleDateFormat("MMM dd yyyy HH:mm:ss zzz", Locale.US);
         // epoch to Polar
         long offset0 = 946684800000L;
         long ts = polarEcgData.timeStamp / 1000000 + offset0;
         Date date = new Date(ts);
+
         Log.d(TAG, "PolarEcgData info: "
                 + " thread=" + Thread.currentThread().getName()
                 + " nSamples=" + polarEcgData.samples.size()
                 + " timestamp="
                 + sdf1.format(date) + " (" + ts + ")");
-    }
 
+        // 创建一个时间戳数组
+        long[] tsArray = new long[polarEcgData.samples.size()];
+        Arrays.fill(tsArray, ts);
+        return tsArray;
+    }
+    //时间戳插值
+    public static long[] logEcgDataInfo1(PolarEcgData polarEcgData, int sampleRate) {
+        SimpleDateFormat sdf1 =
+                new SimpleDateFormat("MMM dd yyyy HH:mm:ss zzz", Locale.US);
+        // epoch to Polar
+        long offset0 = 946684800000L;
+        long ts = polarEcgData.timeStamp / 1000000 + offset0;
+        Date date = new Date(ts);
+
+        Log.d(TAG, "PolarEcgData info: "
+                + " thread=" + Thread.currentThread().getName()
+                + " nSamples=" + polarEcgData.samples.size()
+                + " timestamp="
+                + sdf1.format(date) + " (" + ts + ")");
+
+        // 创建一个时间戳数组
+        long[] tsArray = new long[polarEcgData.samples.size()];
+        double interval = 1000.0 / sampleRate; // 使用浮点数计算每个样本的时间间隔（以毫秒为单位）
+        for (int i = 0; i < tsArray.length; i++) {
+            tsArray[i] = ts + (long)(i * interval); // 将浮点数结果转换为长整型
+        }
+        return tsArray;
+    }
     /**
      * Determines if either COARSE or FINE location permission is granted.
      *

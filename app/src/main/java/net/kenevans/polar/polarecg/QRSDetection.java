@@ -52,8 +52,10 @@ public class QRSDetection implements IConstants, IQRSConstants {
 
     //新建一个拿到所有ecg数据的list
     private final List<Double> ecgVals = new ArrayList<>();
+    private final List<Double> ecgTime = new ArrayList<>();
 
     public List<Double> getecgVals() { return ecgVals; }
+    public List<Double> getTimeVals() { return ecgTime; }
 
     /**
      * Moving average of the RR. Used to get the HR as 60 / avgRR.
